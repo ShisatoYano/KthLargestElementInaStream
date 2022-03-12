@@ -25,38 +25,48 @@ void push(struct Node **head, int new_data) {
   (*head) = new_node;
 }
 
-// return true if there is a cycle in linked list
-bool detect_cycle(struct Node *head) {
-  unordered_set<Node *> nodes;
+// delete duplicated nodes
+Node* delete_duplicates(Node* head) {
+  Node* current = head;
 
-  while (head != NULL) {
-    // this node is already present
-    if (nodes.find(head) != nodes.end()) return true;
-
-    // see the node for the first time
-    nodes.insert(head);
-
-    head = head->next;
+  while (current != NULL && current->next != NULL) {
+    if (current->next->data == current->data) {
+      current->next = current->next->next;
+    }
+    else {
+      current = current->next;
+    }
   }
 
-  return false;
+  return head;
 }
 
 // main process
 int main(void) {
   // start with the empty list
-  struct Node *head = NULL;
+  Node* head = NULL;
 
-  push(&head, 20);
-  push(&head, 4);
-  push(&head, 15);
-  push(&head, 10);
+  // create sorted linked list
+  // sorted in ascending order
+  push(&head, 1);
+  push(&head, 1);
+  push(&head, 1);
+  push(&head, 2);
+  push(&head, 2);
+  push(&head, 3);
+  push(&head, 3);
+  push(&head, 3);
 
-  // create a cycle
-  head->next->next->next->next = head;
+  Node* result = NULL;
+  result = delete_duplicates(head);
 
-  if (detect_cycle(head)) cout << "Cycle found" << endl;
-  else cout << "No cycle" << endl;
-
+  // print data of each node
+  Node* current = result; 
+  while (current != NULL)
+  {
+    cout << current->data << endl;
+    current = current->next;
+  }
+  
   return 0;
 }
