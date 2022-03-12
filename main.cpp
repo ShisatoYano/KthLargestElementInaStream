@@ -7,13 +7,15 @@ using namespace std;
 // linked list node
 struct Node {
   int data;
-  struct Node *next;
+  Node *next;
+  Node() : data(0), next(NULL) {}
+  Node(int x, Node* next) : data(x), next(next) {}
 };
 
 // add new data
 void push(struct Node **head, int new_data) {
   // allocate node
-  struct Node *new_node = new Node;
+  Node* new_node = new Node();
 
   // put in the data
   new_node->data = new_data;
@@ -27,18 +29,33 @@ void push(struct Node **head, int new_data) {
 
 // delete duplicated nodes
 Node* delete_duplicates(Node* head) {
-  Node* current = head;
+  // sentinel
+  Node* sentinel = new Node(0, head);
 
-  while (current != NULL && current->next != NULL) {
-    if (current->next->data == current->data) {
-      current->next = current->next->next;
+  // predecessor = the last node
+  // before the sublist of duplicates
+  Node* pred = sentinel;
+
+  while (head != NULL) {
+    // if it's beginning of duplicates sublist
+    // skip all duplicates
+    if (head->next != NULL && head->data == head->next->data) {
+      // move till the end of duplicates sublist
+      while (head->next != NULL && head->data == head->next->data) {
+        head = head->next;
+      }
+      // skip all duplicates
+      pred->next = head->next;
     }
-    else {
-      current = current->next;
+    else { // otherwise, move predecessor
+      pred = pred->next;
     }
+    
+    // move forward
+    head = head->next;
   }
 
-  return head;
+  return sentinel->next;
 }
 
 // main process
@@ -48,24 +65,21 @@ int main(void) {
 
   // create sorted linked list
   // sorted in ascending order
-  push(&head, 1);
-  push(&head, 1);
-  push(&head, 1);
+  push(&head, 5);
+  push(&head, 4);
+  push(&head, 3);
+  push(&head, 3);
   push(&head, 2);
   push(&head, 2);
-  push(&head, 3);
-  push(&head, 3);
-  push(&head, 3);
+  push(&head, 1);
 
-  Node* result = NULL;
-  result = delete_duplicates(head);
+  Node* result = delete_duplicates(head);
 
   // print data of each node
-  Node* current = result; 
-  while (current != NULL)
+  while (result != NULL)
   {
-    cout << current->data << endl;
-    current = current->next;
+    cout << result->data << endl;
+    result = result->next;
   }
   
   return 0;
