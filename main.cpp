@@ -1,18 +1,16 @@
 #include <iostream>
 #include <string>
-#include <unordered_set>
 
 using namespace std;
 
-// linked list node
 struct Node {
   int data;
   Node *next;
   Node() : data(0), next(NULL) {}
+  Node(int x) : data(x), next(NULL) {}
   Node(int x, Node* next) : data(x), next(next) {}
 };
 
-// add new data
 void push(struct Node **head, int new_data) {
   // allocate node
   Node* new_node = new Node();
@@ -27,53 +25,52 @@ void push(struct Node **head, int new_data) {
   (*head) = new_node;
 }
 
-// delete duplicated nodes
-Node* delete_duplicates(Node* head) {
-  // sentinel
-  Node* sentinel = new Node(0, head);
+Node* add_two_numbers(Node* l1, Node* l2) {
+  Node* dummy_head = new Node(0);
 
-  // predecessor = the last node
-  // before the sublist of duplicates
-  Node* pred = sentinel;
+  Node* p = l1;
+  Node* q = l2;
+  Node* current = dummy_head;
 
-  while (head != NULL) {
-    // if it's beginning of duplicates sublist
-    // skip all duplicates
-    if (head->next != NULL && head->data == head->next->data) {
-      // move till the end of duplicates sublist
-      while (head->next != NULL && head->data == head->next->data) {
-        head = head->next;
-      }
-      // skip all duplicates
-      pred->next = head->next;
-    }
-    else { // otherwise, move predecessor
-      pred = pred->next;
-    }
-    
-    // move forward
-    head = head->next;
+  int carry = 0;
+
+  while (p != NULL || q != NULL) {
+    int x = 0;
+    if (p != NULL) x = p->data;
+
+    int y = 0;
+    if (q != NULL) y = q->data;
+
+    int sum = x + y + carry;
+    carry = sum / 10;
+
+    current->next = new Node(sum % 10);
+    current = current->next;
+
+    if (p != NULL) p = p->next;
+    if (q != NULL) q = q->next;
   }
 
-  return sentinel->next;
+  // end of list
+  if (carry > 0) current->next = new Node(carry);
+
+  return dummy_head->next;
 }
 
-// main process
 int main(void) {
-  // start with the empty list
-  Node* head = NULL;
+  // create input linked list: l1
+  Node* l1 = NULL;
+  push(&l1, 3);
+  push(&l1, 4);
+  push(&l1, 2);
 
-  // create sorted linked list
-  // sorted in ascending order
-  push(&head, 5);
-  push(&head, 4);
-  push(&head, 3);
-  push(&head, 3);
-  push(&head, 2);
-  push(&head, 2);
-  push(&head, 1);
+  // create input linked list: l2
+  Node* l2 = NULL;
+  push(&l2, 4);
+  push(&l2, 6);
+  push(&l2, 5);
 
-  Node* result = delete_duplicates(head);
+  Node* result = add_two_numbers(l1, l2);
 
   // print data of each node
   while (result != NULL)
