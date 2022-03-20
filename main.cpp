@@ -42,23 +42,54 @@ Node* reverse_list_iterative(Node* head) {
   return prev;
 }
 
+Node* reverse_list_recursive(Node* head) {
+  if (head == NULL || head->next == NULL) return head;
+
+  Node* p = reverse_list_recursive(head->next);
+
+  head->next->next = head;
+
+  head->next = NULL;
+
+  return p;
+}
+
 int main(void) {
-  // create input 
-  Node* head = NULL;
-  push(&head, 5);
-  push(&head, 4);
-  push(&head, 3);
-  push(&head, 2);
-  push(&head, 1);
+  cout << "Iterative Approach" << endl;
+  cout << "Input LinkedList: 1->2->3->4->5" << endl;
+  
+  Node* head1 = NULL;
+  push(&head1, 5);
+  push(&head1, 4);
+  push(&head1, 3);
+  push(&head1, 2);
+  push(&head1, 1);
 
-  Node* result_iterative = reverse_list_iterative(head);
-
-  cout << "Result by Iterative Approach" << endl;
+  Node* result_iterative = reverse_list_iterative(head1);
   while (result_iterative != NULL)
   {
-    cout << result_iterative->data << endl;
+    cout << result_iterative->data << "->";
     result_iterative = result_iterative->next;
   }
+  cout << "" << endl;
+  
+  cout << "Recursive Approach" << endl;
+  cout << "Input LinkedList: 1->2->3->4->5" << endl;
+
+  Node* head2 = NULL;
+  push(&head2, 5);
+  push(&head2, 4);
+  push(&head2, 3);
+  push(&head2, 2);
+  push(&head2, 1);
+
+  Node* result_recursive = reverse_list_recursive(head2);
+  while (result_recursive != NULL)
+  {
+    cout << result_recursive->data << "->";
+    result_recursive = result_recursive->next;
+  }
+  cout << "" << endl;
   
   return 0;
 }
