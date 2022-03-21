@@ -1,95 +1,56 @@
 #include <iostream>
-#include <string>
+#include <queue>
 
 using namespace std;
 
-struct Node {
-  int data;
-  Node *next;
-  Node() : data(0), next(NULL) {}
-  Node(int x) : data(x), next(NULL) {}
-  Node(int x, Node* next) : data(x), next(next) {}
+class KthLargest {
+  private:
+    int k;
+    priority_queue <int, vector<int>, greater<int>> min_heap;
+  public:
+    KthLargest(int k, vector<int>& nums) {
+      this->k = k;
+
+      for (int num : nums) {
+        this->min_heap.push(num);
+      }
+
+      while (this->min_heap.size() > this->k) {
+        this->min_heap.pop();
+      }
+    }
+
+    int add(int val) {
+      this->min_heap.push(val);
+
+      if (this->min_heap.size() > this->k) {
+        this->min_heap.pop();
+      }
+
+      return this->min_heap.top();
+    }
 };
 
-void push(struct Node **head, int new_data) {
-  // allocate node
-  Node* new_node = new Node();
-
-  // put in the data
-  new_node->data = new_data;
-
-  // link the old list off the new node
-  new_node->next = (*head);
-
-  // move the head to pointer to the new node
-  (*head) = new_node;
-}
-
-Node* reverse_list_iterative(Node* head) {
-  Node* prev = NULL;
-  Node* curr = head;
-
-  while (curr != NULL) {
-    Node* next_temp = curr->next;
-
-    curr->next = prev;
-
-    prev = curr;
-
-    curr = next_temp;
-  }
-
-  return prev;
-}
-
-Node* reverse_list_recursive(Node* head) {
-  if (head == NULL || head->next == NULL) return head;
-
-  Node* p = reverse_list_recursive(head->next);
-
-  head->next->next = head;
-
-  head->next = NULL;
-
-  return p;
-}
-
 int main(void) {
-  cout << "Iterative Approach" << endl;
-  cout << "Input LinkedList: 1->2->3->4->5" << endl;
-  
-  Node* head1 = NULL;
-  push(&head1, 5);
-  push(&head1, 4);
-  push(&head1, 3);
-  push(&head1, 2);
-  push(&head1, 1);
+  vector<int> input = {4, 5, 8, 2};
+  int k = 3;
 
-  Node* result_iterative = reverse_list_iterative(head1);
-  while (result_iterative != NULL)
-  {
-    cout << result_iterative->data << "->";
-    result_iterative = result_iterative->next;
-  }
-  cout << "" << endl;
-  
-  cout << "Recursive Approach" << endl;
-  cout << "Input LinkedList: 1->2->3->4->5" << endl;
+  KthLargest kl = KthLargest(k, input);
 
-  Node* head2 = NULL;
-  push(&head2, 5);
-  push(&head2, 4);
-  push(&head2, 3);
-  push(&head2, 2);
-  push(&head2, 1);
+  int result_test1 = kl.add(3);
+  cout << "Add 3: Kth largest num is " << result_test1 << endl;
 
-  Node* result_recursive = reverse_list_recursive(head2);
-  while (result_recursive != NULL)
-  {
-    cout << result_recursive->data << "->";
-    result_recursive = result_recursive->next;
-  }
-  cout << "" << endl;
-  
+  int result_test2 = kl.add(5);
+  cout << "Add 5: Kth largest num is " << result_test2 << endl;
+
+  int result_test3 = kl.add(10);
+  cout << "Add 10: Kth largest num is " << result_test3 << endl;
+
+  int result_test4 = kl.add(9);
+  cout << "Add 9: Kth largest num is " << result_test4 << endl;
+
+  int result_test5 = kl.add(4);
+  cout << "Add 4: Kth largest num is " << result_test5 << endl;
+    
   return 0;
 }
